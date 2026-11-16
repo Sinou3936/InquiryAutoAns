@@ -1,0 +1,34 @@
+# 비밀 정보 (가장 중요)
+.env
+.env.*
+!.env.example
+secrets/
+
+# 파이썬 가상환경
+.venv/
+venv/
+
+# 파이썬 캐시·빌드 산출물
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# 테스트·도구 캐시
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# 에디터·OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# 실행 결과·로그 (실제 문의 내용이 들어갈 수 있음)
+logs/
+*.log
+output/
