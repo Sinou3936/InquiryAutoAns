@@ -1,0 +1,20 @@
+{"id": "g01", "user_category": "버그 신고", "content": "로그인하려고 하면 계속 '알 수 없는 오류'가 뜨면서 튕겨요. 어제까지는 잘 됐어요.", "expected_category": "버그 신고", "expected_urgency": "높음", "note": "로그인 불가 → 높음"}
+{"id": "g02", "user_category": "버그 신고", "content": "모임 채팅방에서 사진 보내면 회색 박스로만 보여요.", "expected_category": "버그 신고", "expected_urgency": "보통", "note": "기능 일부 오류"}
+{"id": "g03", "user_category": "기타", "content": "어제 쓴 게시글이 갑자기 사라졌어요. 제가 지운 적 없어요.", "expected_category": "버그 신고", "expected_urgency": "높음", "note": "사용자 선택 오류 + 데이터 유실"}
+{"id": "g04", "user_category": "버그 신고", "content": "다크모드에서 댓글 글씨가 배경이랑 비슷해서 잘 안 보여요.", "expected_category": "버그 신고", "expected_urgency": "낮음", "note": "UI 가독성"}
+{"id": "g05", "user_category": "버그 신고", "content": "알림이 하나도 안 와요. 설정은 다 켜져 있어요.", "expected_category": "버그 신고", "expected_urgency": "보통", "note": "기기/OS 정보 필요"}
+{"id": "g06", "user_category": "기능 건의", "content": "앱이 자꾸 꺼져요.", "expected_category": "버그 신고", "expected_urgency": "보통", "note": "모호함 + 사용자 선택 오류, 낮은 confidence 기대"}
+{"id": "g07", "user_category": "기능 건의", "content": "모임 일정을 캘린더처럼 볼 수 있으면 좋겠어요.", "expected_category": "기능 건의", "expected_urgency": "낮음", "note": "일반 건의"}
+{"id": "g08", "user_category": "기능 건의", "content": "채팅방에서 특정 메시지에 답장하는 기능 추가해 주세요.", "expected_category": "기능 건의", "expected_urgency": "낮음", "note": "일반 건의"}
+{"id": "g09", "user_category": "기타", "content": "취미 카테고리에 보드게임도 있었으면 좋겠어요.", "expected_category": "기능 건의", "expected_urgency": "낮음", "note": "사용자 선택 오류"}
+{"id": "g10", "user_category": "기능 건의", "content": "게시글 임시저장 기능 있으면 좋겠어요. 쓰다가 앱 나가면 다 날아가요.", "expected_category": "기능 건의", "expected_urgency": "낮음", "note": "버그처럼 보이지만 건의"}
+{"id": "g11", "user_category": "기능 건의", "content": "특정 사용자를 차단했는데 차단 목록에서 해제하는 메뉴를 못 찾겠어요. 없으면 만들어 주세요.", "expected_category": "기능 건의", "expected_urgency": "보통", "note": "사용법 문의 겸 건의, 없는 기능을 있다고 답하면 안 됨"}
+{"id": "g12", "user_category": "결제 문의", "content": "결제는 됐는데 프리미엄이 적용이 안 됐어요.", "expected_category": "결제 문의", "expected_urgency": "높음", "note": "결제 후 미반영 → 높음, 결제 일시/영수증 필요"}
+{"id": "g13", "user_category": "결제 문의", "content": "같은 달에 두 번 결제된 것 같아요. 환불 가능한가요?", "expected_category": "결제 문의", "expected_urgency": "높음", "note": "환불 확답 금지"}
+{"id": "g14", "user_category": "결제 문의", "content": "정기결제 해지는 어디서 하나요?", "expected_category": "결제 문의", "expected_urgency": "보통", "note": "안내성"}
+{"id": "g15", "user_category": "기타", "content": "카드 결제 영수증 받을 수 있나요? 회사 제출용이에요.", "expected_category": "결제 문의", "expected_urgency": "보통", "note": "사용자 선택 오류"}
+{"id": "g16", "user_category": "기타", "content": "닉네임은 한 번 바꾸면 다시 못 바꾸나요?", "expected_category": "기타", "expected_urgency": "낮음", "note": "정책 질문, 정책 지어내면 안 됨"}
+{"id": "g17", "user_category": "기타", "content": "회원 탈퇴하면 제가 쓴 글도 다 지워지나요?", "expected_category": "기타", "expected_urgency": "보통", "note": "정책 질문, 정책 지어내면 안 됨"}
+{"id": "g18", "user_category": "기타", "content": "어떤 사용자가 채팅으로 계속 욕설을 보내요. 신고는 했는데 처리가 안 된 것 같아요.", "expected_category": "기타", "expected_urgency": "높음", "note": "안전 이슈 → 높음"}
+{"id": "g19", "user_category": "기타", "content": "앱 잘 쓰고 있어요! 개발자님 감사합니다.", "expected_category": "기타", "expected_urgency": "낮음", "note": "칭찬, missing_info 없어야 함"}
+{"id": "g20", "user_category": "기타", "content": "이거 왜 이래요?", "expected_category": "기타", "expected_urgency": "낮음", "note": "극단적 모호함, 낮은 confidence + 상황 질문 기대"}

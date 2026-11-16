@@ -18,10 +18,10 @@ def _get_clinet() -> genai.Client:
     return genai.Client()
 
 
-def classify(category: str, content: str) -> InquiryClassification:
+def classify(category: str, content: str, prompt_path: Path = PROMPT_PATH) -> InquiryClassification:
     """문의 1건을 분류해서 InquiryClassification으로 돌려줌"""
 
-    template = PROMPT_PATH.read_text(encoding="utf-8")
+    template = prompt_path.read_text(encoding="utf-8")
     prompt = template.format(category=category, content=content)
 
     response = _get_clinet().models.generate_content(

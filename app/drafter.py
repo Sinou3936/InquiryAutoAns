@@ -16,11 +16,11 @@ MODEL= "gemini-3.1-flash-lite"
 def _get_client() -> genai.Client:
     return genai.Client()
 
-def draft(content: str, classification: InquiryClassification) -> InquiryDraft:
+def draft(content: str, classification: InquiryClassification, prompt_path: Path = PROMPT_PATH) -> InquiryDraft:
     """ 문의 내용과 분류 결과를 답변 초안을 만들어 돌려줌"""
 
     missing = ", ".join(classification.missing_info) or "없음"
-    template = PROMPT_PATH.read_text(encoding="utf-8")
+    template = prompt_path.read_text(encoding="utf-8")
 
     prompt = template.format(
         category = classification.category,

@@ -9,7 +9,7 @@ from app.firebase_repo import fetch_pending, get_db, save_ai_draft
 
 MAX_RETRY = 3
 DELAY_BETWEEN = 10
-
+RETRY_CODES = {429, 503}
 
 def call_with_retry(func, *args):
     """429(한도 초과)면 기다렸다가 다시 시도, 다른 에러는 그대로 올림"""
@@ -18,7 +18,7 @@ def call_with_retry(func, *args):
         try:
             return func(*args)
         except errors.APIError as e:
-            if e.code != 429 or attempt == MAX_RETRY:
+            if e.code not in RETRY_CODES or attempt == MAX_RETRY:
                 raise
             wait = 20 * attempt
             print(f" 한도 초과, {wait}초 후 재시도 ({attempt}/{MAX_RETRY})")

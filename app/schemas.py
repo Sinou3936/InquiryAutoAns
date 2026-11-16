@@ -17,4 +17,4 @@ class InquiryClassification(BaseModel):
 class InquiryDraft(BaseModel):
     """drafter.py가 돌려줄 답변 초안"""
 
-    draft_reply: str = Field(description="정중한 존댓말 답변 초안, 3~5문항")
+    draft_reply: str = Field(description="정중한 존댓말 답변 초안")
