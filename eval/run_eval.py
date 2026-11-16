@@ -98,7 +98,7 @@ def print_summary(s: dict) -> None:
     print(f"\n 총 {s['total']}건 (실패 {s['failed']}건 )")
     print(f"카테고리 정확도 {s['category_acc']:.0%} / 긴급도 정확도{s['urgency_acc']:.0%} / 잘못 고른 카테고리 교정 {s['trap_fixed']:.0%}")
     for v,d in s["drafts"].items():
-        print(f"[{v}] 80자 이내 {d['within_80_rate']:.0f} / 지어낸 약속 {d['forbidden_rate']:.0f} / 평균 {d['avg_length']:.0f}자")
+        print(f"[{v}] 80자 이내 {d['within_80_rate']:.0%} / 지어낸 약속 {d['forbidden_rate']:.0%} / 평균 {d['avg_length']:.0f}자")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
