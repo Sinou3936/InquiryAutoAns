@@ -13,6 +13,10 @@ class InquiryClassification(BaseModel):
 
     confidence: float = Field(ge=0.0, le=1.0)
 
+    needs_policy: bool = Field(
+        description="앱의 정책·규칙·기능 사용법을 안내해야 답할 수 있는 문의면 true, 버그 신고나 기능 건의처럼 정책 안내가 필요 없으면 false"
+    )
+
 
 class InquiryDraft(BaseModel):
     """drafter.py가 돌려줄 답변 초안"""
