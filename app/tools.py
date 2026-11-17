@@ -79,6 +79,26 @@ def search_policy(query:str) -> dict:
         ]
     }
 
+UID_TOOLS = {
+    "get_user_posts": get_user_posts,
+    "get_reports": get_reports,
+    "get_user_profile": get_user_profile
+}
+
+def run_tool(name:str, uid:str, args:dict) -> dict:
+    """에이전트가 고른 도구를 실행, 실패해도 예외 대신 에러 dict를 돌려줌"""
+    try:
+        if name in UID_TOOLS:
+            return UID_TOOLS[name](uid)
+        if name =="search_policy":
+            query = str(args.get("query","")).strip()
+            if not query:
+                return {"error": "query가 비어 있음"}
+            return search_policy(query)
+        return {"error": f"없는 도구: {name}"}
+    except Exception as e:
+        return {"error": f"{name} 실행 실패: {str(e)[:100]}"}
+
 
 if __name__ == "__main__":
     uid = sys.argv[1]
