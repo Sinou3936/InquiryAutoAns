@@ -5,7 +5,7 @@ from pathlib import Path
 from google.genai import types
 from app import classifier, drafter, tools
 from app.classifier import _get_clinet
-from app.pipeline import call_with_retry
+from app.retry import call_with_retry
 from datetime import datetime,timedelta, timezone
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
@@ -46,7 +46,7 @@ def _to_facts(name:str, result:dict) -> list[dict]:
         return result.get("results", [])
     return [{"source":"조회", "title":name, "text": json.dumps(result, ensure_ascii=False)}]
 
-def investigate(uid:str, content:str, c) -> tuple[list[dict], list[dict]]:
+def investigate(uid:str, content:str, c, run_tool=tools.run_tool) -> tuple[list[dict], list[dict]]:
     """도구를 반복 호출해 사실을 모음. (근거 목록, 호출 기록)을 반환"""
     prompt = PROMPT_PATH.read_text(encoding="utf-8").format(
         today=datetime.now(KST).strftime("%Y-%m-%d"),
@@ -74,7 +74,7 @@ def investigate(uid:str, content:str, c) -> tuple[list[dict], list[dict]]:
         reply_parts = []
         for call in calls[: MAX_TOOL_CALLS - len(trace)]:
             args = dict(call.args or {})
-            result = tools.run_tool(call.name, uid, args)
+            result = run_tool(call.name, uid, args)
             trace.append({
                 "tool": call.name,
                 "args": args,
@@ -90,10 +90,10 @@ def investigate(uid:str, content:str, c) -> tuple[list[dict], list[dict]]:
     
     return facts, trace
 
-def run_agent(uid:str, category:str, content:str):
+def run_agent(uid:str, category:str, content:str, run_tool=tools.run_tool):
     """분류 -> 조사 -> 작성. (분류, 초안, 근거, 호출 기록)을 반환"""
     c = call_with_retry(classifier.classify, category, content)
-    facts, trace = investigate(uid, content, c)
+    facts, trace = investigate(uid, content, c,run_tool)
     d = call_with_retry(drafter.draft, content, c, sources=facts)
     return c, d, facts, trace
 

@@ -3,26 +3,27 @@ import time
 
 from firebase_admin import firestore
 from app import classifier, drafter, retriever
-from google.genai import errors
+from app.retry import DELAY_BETWEEN, call_with_retry
+# from google.genai import errors
 
 from app.firebase_repo import fetch_pending, get_db, save_ai_draft
 
-MAX_RETRY = 3
-DELAY_BETWEEN = 10
-RETRY_CODES = {429, 503}
+# MAX_RETRY = 3
+# DELAY_BETWEEN = 10
+# RETRY_CODES = {429, 503}
 
-def call_with_retry(func, *args, **kwargs):
-    """429(한도 초과)면 기다렸다가 다시 시도, 다른 에러는 그대로 올림"""
+# def call_with_retry(func, *args, **kwargs):
+#     """429(한도 초과)면 기다렸다가 다시 시도, 다른 에러는 그대로 올림"""
 
-    for attempt in range(1, MAX_RETRY +1):
-        try:
-            return func(*args, **kwargs)
-        except errors.APIError as e:
-            if e.code not in RETRY_CODES or attempt == MAX_RETRY:
-                raise
-            wait = 20 * attempt
-            print(f" 한도 초과, {wait}초 후 재시도 ({attempt}/{MAX_RETRY})")
-            time.sleep(wait)
+#     for attempt in range(1, MAX_RETRY +1):
+#         try:
+#             return func(*args, **kwargs)
+#         except errors.APIError as e:
+#             if e.code not in RETRY_CODES or attempt == MAX_RETRY:
+#                 raise
+#             wait = 20 * attempt
+#             print(f" 한도 초과, {wait}초 후 재시도 ({attempt}/{MAX_RETRY})")
+#             time.sleep(wait)
 
 
 def run(limit: int, write:bool) -> None:
