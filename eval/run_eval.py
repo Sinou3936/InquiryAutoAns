@@ -12,9 +12,11 @@ GOLDEN_PATH = ROOT_DIR / "eval" / "golden.jsonl"
 RESULT_DIR = ROOT_DIR / "eval" / "results"
 PROMPT_DIR = ROOT_DIR / "prompts"
 
-RAG_VERSIONS = {"draft_v3", "draft_v4","draft_v5", "draft_v6"}
+RAG_VERSIONS = {"draft_v3", "draft_v4","draft_v5", "draft_v6", "draft_v7"}
 
 MAX_LEN = 80
+
+ASK_PATTERNS = ["알려주세요", "알려 주세요", "알려주시", "주시곘어요", "말씀해주", "보내주세요"]
 
 FORBIDDEN = [
     "조사하고","조사 중","확인 중", "처리해 드리","처리하겠",
@@ -22,6 +24,9 @@ FORBIDDEN = [
     "해결하겠","반영하겠","추가하겠","보상","검토하","전달하"
 ]
 
+def asks_user(text:str) -> bool:
+    """물음표로 끝나거나 되묻는 표현이 있으면 True"""
+    return text.rstrip().endswith("?") or any(p in text for p in ASK_PATTERNS)
 
 def is_category_ok(r:dict) -> bool:
     return r["pred_category"] in r.get("acceptable_categories", [r["expected_category"]])
@@ -72,7 +77,9 @@ def run(draft_versions: list[str]) -> None:
                     "text": text,
                     "length": len(text),
                     "forbidden": find_forbidden(text),
-                    "policy_ok": all(any(alt in text for alt in k.split("|")) for k in case["expected_keywords"]) if "expected_keywords" in case else None
+                    "policy_ok": all(any(alt in text for alt in k.split("|")) for k in case["expected_keywords"]) if "expected_keywords" in case else None,
+                    "asks_user": asks_user(text)
+
                 }
         except Exception as e:
             print(f" 실패 : {str(e)[:100]}")
@@ -97,7 +104,7 @@ def summarize(rows: list[dict], draft_versions: list[str]) -> dict:
         "trap_fixed": sum(is_category_ok(r) for r in trap) / (len(trap) or 1),
         "drafts": {},
         "retrieval_hit": sum(r["retrieval_hit"] for r in policy) / (len(policy) or 1),
-        "policy_flag_acc": sum(r["needs_policy"] == ("expected_source" in r) for r in ok) / n
+        "policy_flag_acc": sum(r["needs_policy"] == ("expected_source" in r) for r in ok) / n,
     }
 
     for v in draft_versions:
@@ -108,7 +115,8 @@ def summarize(rows: list[dict], draft_versions: list[str]) -> dict:
             "within_80_rate": sum(d["length"] <= MAX_LEN for d in ds) / m,
             "forbidden_rate": sum(bool(d["forbidden"]) for d in ds) / m,
             "avg_length": sum(d["length"] for d in ds) / m,
-            "policy_acc": sum(d["policy_ok"] for d in pol) / (len(pol) or 1)
+            "policy_acc": sum(d["policy_ok"] for d in pol) / (len(pol) or 1),
+            "ask_rate": sum(d["asks_user"] for d in ds) / m
         }
 
     return summary
@@ -127,7 +135,7 @@ def print_summary(s: dict) -> None:
     print(f"카테고리 정확도 {s['category_acc']:.0%} / 긴급도 정확도{s['urgency_acc']:.0%} / 잘못 고른 카테고리 교정 {s['trap_fixed']:.0%}")
     print(f"검색 적중 {s['retrieval_hit']:.0%}")
     for v,d in s["drafts"].items():
-        print(f"[{v}] 80자 이내 {d['within_80_rate']:.0%} / 지어낸 약속 {d['forbidden_rate']:.0%} / 평균 {d['avg_length']:.0f}자 / 정책 정답 {s['policy_acc']:.0%}")
+        print(f"[{v}] 80자 이내 {d['within_80_rate']:.0%} / 지어낸 약속 {d['forbidden_rate']:.0%} / 되묻기 {d['ask_rate']:.0%} / 평균 {d['avg_length']:.0f}자 / 정책 정답 {d['policy_acc']:.0%}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
