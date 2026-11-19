@@ -36,3 +36,6 @@ output/
 eval/results
 
 data/
+
+firebase.json
+.firebaserc

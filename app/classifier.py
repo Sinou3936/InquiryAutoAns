@@ -7,7 +7,7 @@ from app.schemas import InquiryClassification
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 
-load_dotenv(ROOT_DIR / ".env")
+load_dotenv(ROOT_DIR / ".env.local")
 
 PROMPT_PATH = ROOT_DIR / "prompts" / "classify_v2.txt"
 MODEL= "gemini-3.1-flash-lite"

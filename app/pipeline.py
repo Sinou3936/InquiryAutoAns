@@ -21,31 +21,13 @@ def _draft_agent(inq: dict):
     return agent.run_agent(inq["uid"], inq.get("category","기타"), inq.get("content",""))
 
 
-def run(limit: int, write:bool) -> None:
-    print("연결된 프로젝트:", get_db().project)
-    print("모드:", "저장" if write else "확인만(저장 안함)")
-
-    inquiries = fetch_pending(limit) 
-    ok,fail =0, 0
-
-    for inq in inquiries:
-        content = inq.get("content", "")
-        try:
-            # c = call_with_retry(classifier.classify,inq.get("category","기타"),content)
-            # sources = call_with_retry(retriever.search, content) if c.needs_policy else []
-            # d = call_with_retry(drafter.draft, content, c, sources=sources)
-            c, d, sources, trace = _draft_agent(inq) if user_agent else _draft_basic(inq)
-        except Exception as e:
-            print(f"[실패] {inq['id']}: {str(e)[:100]}")
-            fail += 1
-            time.sleep(DELAY_BETWEEN)
-            continue
-
-        version = f"{classifier.PROMPT_PATH.stem}+{drafter.PROMPT_PATH.stem}"
-        if trace:
-            version += f"+{agent.PROMPT_PATH.stem}"
-        
-        fields = {
+def build_fields(c, d, sources: list[dict], trace: list[dict]) -> dict:
+    """분류/초안/근거/조사기록을 Firebase 저장 형식으로 변환"""
+    version = f"{classifier.PROMPT_PATH.stem}+{drafter.PROMPT_PATH.stem}"
+    if trace:
+        version += f"+{agent.PROMPT_PATH.stem}"
+            
+    return {
             "aiCategory": c.category,
             "aiUrgency": c.urgency,
             "aiSubType": c.sub_type,
@@ -61,18 +43,42 @@ def run(limit: int, write:bool) -> None:
                 for s in sources
             ],
             "aiTrace": trace
-        }
+    }
 
-        print(f"\n[{c.category}/{c.urgency}/{c.sub_type}] {content[:40]}")
-        for t in trace:
+def process_one(inq:dict, use_agent:bool = True, write:bool =True) -> dict:
+    """문의 1건 처리, 로컬 run과 Clound Function이 같이 쓰는 공통 함수"""
+    c, d, sources, trace = _draft_agent(inq) if use_agent else _draft_basic(inq)
+    fields = build_fields(c,d, sources, trace)
+    if write:
+        save_ai_draft(inq["id"],trace)
+    return fields
+
+def run(limit: int, write:bool, use_agent:bool) -> None:
+    print("연결된 프로젝트:", get_db().project)
+    print("모드:", "저장" if write else "확인만(저장 안함)", "/", "에이전트" if use_agent else "기본" )
+
+    inquiries = fetch_pending(limit) 
+    ok,fail =0, 0
+
+    for inq in inquiries:
+        content = inq.get("content", "")
+        try:
+            f = process_one(inq, use_agent, write)
+        except Exception as e:
+            print(f"[실패] {inq['id']}: {str(e)[:100]}")
+            fail += 1
+            time.sleep(DELAY_BETWEEN)
+            continue
+
+        print(f"\n[{f['aiCategory']}/{f['aiUrgency']}/{f['aiSubType']}] {content[:40]}")
+        for t in f["aiTrace"]:
             print(f"    도구: {t['tool']}")
-        print(" 초안:", d.draft_reply[:80])
+        print(" 초안:", f["aiDraft"][:80])
 
-        for s in sources:
+        for s in f["aiSources"]:
             print(f"    근거: {s['source']} / {s['title']}")
 
             if write:
-                save_ai_draft(inq["id"], fields)
                 ok += 1
             time.sleep(DELAY_BETWEEN)
 
@@ -85,4 +91,4 @@ if __name__ == "__main__":
     parser.add_argument("--write", action="store_true", help="붙이면 Firestore에 저장")
     parser.add_argument("--agent", action="store_true", help="붙이면 도구 조사 후 초안 작성")
     args = parser.parse_args()
-    run(args.limit, args.write)
+    run(args.limit, args.write, args.agent)

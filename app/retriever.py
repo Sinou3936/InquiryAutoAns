@@ -9,7 +9,7 @@ from google import genai
 from google.genai import types
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
-load_dotenv(ROOT_DIR / ".env")
+load_dotenv(ROOT_DIR / ".env.local")
 
 POLICY_DIR = ROOT_DIR / "policies"
 INDEX_PATH = ROOT_DIR / "data" / "index.json"

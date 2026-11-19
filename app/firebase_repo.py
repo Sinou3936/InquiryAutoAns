@@ -15,14 +15,15 @@ KEY_PATH = ROOT_DIR / "secrets" / "serviceAccountKey.json"
 
 _OLDEST = datetime.min.replace(tzinfo=timezone.utc)
 
-if not KEY_PATH.exists():
-    raise FileNotFoundError(f"Service account key file not found at {KEY_PATH}")
-
 @lru_cache(maxsize=1)
 def get_db():
     if not firebase_admin._apps:
-        firebase_admin.initialize_app(credentials.Certificate(str(KEY_PATH)))
-        return firestore.client()
+        if KEY_PATH.exists():
+            firebase_admin.initialize_app(credentials.Certificate(str(KEY_PATH)))
+        else:
+            firebase_admin.initialize_app()
+            
+    return firestore.client()
 
 def fetch_pending(limit: int = 10) -> list[dict]:
     """답변 대기 중이고 아직 AI 초안이 없는 문의 목록"""
