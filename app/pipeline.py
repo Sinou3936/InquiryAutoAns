@@ -39,7 +39,11 @@ def build_fields(c, d, sources: list[dict], trace: list[dict]) -> dict:
             "aiCreatedAt": firestore.SERVER_TIMESTAMP,
             "aiNeedsPolicy": c.needs_policy,
             "aiSources": [
-                {"source": s["source"], "title": s["title"], "score": round(s["score"],3)}
+                {
+                    "source": s.get("source"),
+                    "title": s.get("title"),
+                    "score": round(s["score"],3) if s.get("score") is not None else None
+                 }
                 for s in sources
             ],
             "aiTrace": trace
