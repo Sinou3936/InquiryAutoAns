@@ -32,7 +32,7 @@ def _handle(inq:dict) -> None:
     secrets=[AX_GEMINI_KEY, SLACK_URL],
     timeout_sec=120
 )
-def on_inquiry_created(event: firestore_fn.Event[firestore_fn.DocumentSnapShot | None]) -> None:
+def on_inquiry_created(event: firestore_fn.Event[firestore_fn.DocumentSnapshot | None]) -> None:
     """문의가 생성되면 AI 초안 작성"""
     if event.data is None:
         return
