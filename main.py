@@ -46,9 +46,18 @@ def on_inquiry_created(event: firestore_fn.Event[firestore_fn.DocumentSnapshot |
     try:
         _handle(inq)
     except Exception as e:
-        print(f"[실패] {inq['id']}: {e}")
+        # print(f"[실패] {inq['id']}: {e}")
+        # from app.notify import send_slack
+        # send_slack(f"⚠️ AI 초안 실패 ({inq['id']}), 내일 09시에 다시 시도해요: {str(e)[:100]}")
+        import traceback
+        tb = traceback.format_exc()
+        print(tb)
         from app.notify import send_slack
-        send_slack(f"⚠️ AI 초안 실패 ({inq['id']}), 내일 09시에 다시 시도해요: {str(e)[:100]}")
+        # 어느 파일 몇 줄에서 터졌는지가 끝부분에 있어서 마지막 1500자만 보냄
+        send_slack(
+            f"⚠️ AI 초안 실패 ({inq['id']}), 내일 09시에 다시 시도해요\n"
+            f"```{tb[-1500:]}```"
+        )
 
 
 @scheduler_fn.on_schedule(

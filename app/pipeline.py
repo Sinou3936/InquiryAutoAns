@@ -54,7 +54,7 @@ def process_one(inq:dict, use_agent:bool = True, write:bool =True) -> dict:
     c, d, sources, trace = _draft_agent(inq) if use_agent else _draft_basic(inq)
     fields = build_fields(c,d, sources, trace)
     if write:
-        save_ai_draft(inq["id"],trace)
+        save_ai_draft(inq["id"],fields)
     return fields
 
 def run(limit: int, write:bool, use_agent:bool) -> None:

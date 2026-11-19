@@ -55,7 +55,7 @@ def get_reports(uid:str) -> dict:
                 "preview": (by_id[pid].get("content") or "")[:PREVIEW_LEN],
                 "state": _post_state(by_id[pid]),
                 "report_count": n,
-                "reasons": sorted(reasons[pid][:3])
+                "reasons": sorted(reasons[pid])[:3]
             }
             for pid, n in counts.items()
         ]
