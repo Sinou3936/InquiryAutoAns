@@ -18,4 +18,4 @@ def call_with_retry(func, *args, **kwargs):
                 raise
             wait = 20 * attempt
             print(f"    일시 오류({e.code}), {wait}초 후 재시도 ({attempt}/ {MAX_RETRY})")
-            time.sleep(attempt)
+            time.sleep(wait)

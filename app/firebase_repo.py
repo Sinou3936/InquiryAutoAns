@@ -35,12 +35,12 @@ def fetch_pending(limit: int = 10) -> list[dict]:
     result = []
     for doc in docs:
         data = doc.to_dict()
-        if data.get("ai_draft"):
+        if data.get("aiDraft"):
             continue
         data["id"] = doc.id
         result.append(data)
     
-    result.sort(key=lambda d: d.get("createdAt") or 0)
+    result.sort(key=lambda d: d.get("createdAt") or _OLDEST)
     return result[:limit]
 
 def save_ai_draft(inquiry_id: str, fields: dict) -> None:

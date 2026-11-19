@@ -9,7 +9,7 @@ from app.retry import call_with_retry
 from datetime import datetime,timedelta, timezone
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
-PROMPT_PATH = ROOT_DIR / "prompts" / "agent_v1.txt"
+PROMPT_PATH = ROOT_DIR / "prompts" / "agent_v2.txt"
 MODEL = classifier.MODEL
 MAX_TOOL_CALLS = 5
 KST = timezone(timedelta(hours=9))
@@ -108,7 +108,9 @@ if __name__ == "__main__":
     for i, t in enumerate(trace, 1):
         print(f"[도구 {i}] {t['tool']} {t['args']}")
         print(f"    -> {t['summary']}")
-    if not trace:
-        print("[도구] 호출 없음")
+        if not trace:
+            print("[도구] 호출 없음")
+        if facts and facts[0]["source"] == "조사 요약":
+            print(f"[요약] {facts[0]['text']}")
 
     print(f"[초안] {d.draft_reply}")

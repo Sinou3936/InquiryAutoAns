@@ -55,7 +55,7 @@ def run(limit: int, write:bool) -> None:
             "aiModel": classifier.MODEL,
             "aiCreatedAt": firestore.SERVER_TIMESTAMP,
             "aiNeedsPolicy": c.needs_policy,
-            "aiSource": [
+            "aiSources": [
                 {"source": s["source"], "title": s["title"], "score": round(s["score"],3)}
                 for s in sources
             ]
@@ -67,9 +67,10 @@ def run(limit: int, write:bool) -> None:
         for s in sources:
             print(f"    근거: {s['source']} / {s['title']}")
 
-        if write:
-            save_ai_draft(inq["id"], fields)
-            ok += 1
+            if write:
+                save_ai_draft(inq["id"], fields)
+                ok += 1
+            time.sleep(DELAY_BETWEEN)
 
     print(f"\n총 {len(inquiries)}건 중 {ok}건 저장, {fail}건 실패")     
 

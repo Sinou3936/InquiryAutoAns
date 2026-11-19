@@ -4,7 +4,7 @@ from datetime import datetime
 from pathlib import Path
 
 from app import classifier, drafter, retriever
-from app.pipeline import call_with_retry, DELAY_BETWEEN
+from app.retry import call_with_retry, DELAY_BETWEEN
 import time
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
